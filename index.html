@@ -1192,14 +1192,14 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     fig.addEventListener('click',()=>{stop();focus(i);});
     strip.appendChild(fig); p._el=fig;
   });
-  function focus(i){
+  function focus(i,scroll=true){
     cur=i;
     P.forEach((p,j)=>p._el.classList.toggle('focus',j===i));
     $("#galFill").style.width=Math.round(P[i].rich*100)+'%';
     $("#galFill").style.background=P[i].rich>.5?'var(--blue)':'var(--orange)';
     $("#galProv").innerHTML='<b>'+P[i].year+' — '+P[i].desc+'.</b> '+P[i].prov+
       (P[i].note?'<span class="gal-note">'+P[i].note+'</span>':'');
-    P[i]._el.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+    if(scroll) P[i]._el.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
   }
   function stop(){ if(timer){clearInterval(timer);timer=null;$("#galPlay").textContent='▶ watch it collapse';} }
   $("#galPrev").addEventListener('click',()=>{stop();focus(Math.max(0,cur-1));});
@@ -1210,7 +1210,7 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     $("#galPlay").textContent='⏸ pause';
     timer=setInterval(()=>{ if(cur>=P.length-1){stop();return;} focus(cur+1); },1400);
   });
-  focus(0);
+  focus(0,false);
 })();
 
 /* ============ BEAT 1 — stakes · the knowledge-worker bar ========= */
