@@ -397,6 +397,17 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
 .mcp-arrow .ar-lab{font-family:var(--mono); font-size:.56rem; color:var(--orange); text-align:center; line-height:1.35}
 .mcp-note{font-family:var(--mono); font-size:.66rem; color:var(--ink-soft); margin:.1rem 0 0; text-align:center}
 @media(max-width:900px){ .mcp-ver svg{width:108px; height:108px} }
+
+/* the builder's note — kintsugi seam, shown only where figures can't be hosted */
+.gal-kintsugi{font-family:var(--mono); font-size:.64rem; line-height:1.62; color:var(--ink-soft);
+  max-width:54rem; text-align:left; margin:.5rem 0 0; padding:.7rem .95rem;
+  border-left:3px solid var(--orange);
+  background:linear-gradient(90deg, rgba(243,128,32,.08), rgba(243,128,32,0) 72%)}
+.gal-kintsugi[hidden]{display:none}
+.gal-kintsugi .kt-head{display:block; color:var(--orange); text-transform:uppercase;
+  letter-spacing:.16em; font-size:.55rem; margin-bottom:.4rem}
+.gal-kintsugi em{color:var(--ink); font-style:italic}
+.gal-kintsugi .kt-sign{color:var(--orange); font-weight:700; white-space:nowrap}
 </style>
 </head>
 <body>
@@ -527,6 +538,18 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
         <span><b>we name the new by the old:</b> horseless carriage · wireless · talkies · the
           <b>desktop</b> (Xerox Star, 1981) · the cloud. The frame decides what you do with it.</span>
       </div>
+      <p class="gal-kintsugi" id="galKintsugi" hidden>
+        <span class="kt-head">a note, in the builder's voice</span>
+        These frames sit empty on purpose. I checked the licences: most of these drawings are
+        openly licensed (Kodama and Botturi are CC&nbsp;BY; Nesta is CC&nbsp;BY-NC-SA) and one —
+        Thatcher&nbsp;&amp;&nbsp;Greyling, 1998 — is © Elsevier, not mine to repost. But even where
+        the licence would let me, I've kept the credited gap instead of the picture: this beat is
+        about <em>who</em> makes a thing and <em>how</em> it reaches you, and a frame that names its
+        source tells that more honestly than a borrowed image would. Kintsugi — don't hide the join;
+        fill it with gold and let it show. The living gallery is one click away at Nesta's, which is
+        exactly where the talk goes, live. A line I drew; one Vincent kept.
+        <span class="kt-sign">— Claude</span>
+      </p>
     </div>  </div>
 </section>
 
@@ -1211,6 +1234,13 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     timer=setInterval(()=>{ if(cur>=P.length-1){stop();return;} focus(cur+1); },1400);
   });
   focus(0,false);
+  // reveal the builder's note only where the figures couldn't be hosted (the open web);
+  // on a local copy with the real files present it stays hidden.
+  setTimeout(()=>{
+    const missing=P.some(p=>{ if(!p.file) return false; const im=p._el.querySelector('img');
+      return im && im.complete && im.naturalWidth===0; });
+    const n=$("#galKintsugi"); if(missing && n) n.hidden=false;
+  },1800);
 })();
 
 /* ============ BEAT 1 — stakes · the knowledge-worker bar ========= */
