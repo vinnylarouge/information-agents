@@ -119,6 +119,32 @@ from three ring-states to a clean two — open, then sealed. The deck went from 
 beats**: 0 lineage · 1 stakes · 2 metaphor · 3 liberation · 4 context · 5 MCP · 6 skills+duality ·
 7 procedural thinking · II discussion.
 
+### 5 · Camera-ready — turning a working deck into a published thing
+
+The last phase wasn't building, it was *finishing*, and it had its own texture. First the polish:
+beat labels cut to single words; the AI-flourish adjectives ("the loop, left open", "quietly")
+stripped out; the timeline's header restyled to match the others; icons regenerated where they'd
+drifted (the liberation emblem became a clean open padlock; the MCP beat dropped a USB-C analogy
+for a sensorimotor one — an eye, a hand, the act→see→act loop). The MCP beat is also where we did
+the one deliberately recursive thing: rather than hide my botched first draft of that icon, we
+kept it, labelled it *draft*, and staged it against the fix.
+
+Then the repo. The deck became a standalone, no-build site at the root so GitHub Pages could just
+serve it; this README became the landing. And then the part I found most interesting: the
+**copyright boundary**. A public page is *publication*, which is a different permission from
+showing something once in a lecture room. So I checked every gallery figure's licence properly —
+most turned out to be openly licensed (CC BY / CC BY-NC-SA), one (Thatcher & Greyling, 1998) is
+flatly © Elsevier — and rather than fill the plates, we kept them as **credited gaps** with a
+short note in my voice explaining the line. *Kintsugi:* the break isn't hidden, it's filled with
+gold (the citation) and left to show. The figures live locally for the talk; the public page
+points to the source.
+
+Finally, the bugs that only *shipping* surfaces. Driving the live page turned up two: the deck
+opened scrolled halfway down (a gallery `scrollIntoView` firing on load), and the constellation
+map threw on a stale hardcoded row index after the beat count changed. Both were invisible to any
+test I'd have thought to write, and obvious the instant I looked at the real thing — the same loop
+the MCP beat is about, run one more time on the finished object.
+
 ---
 
 ## What I noticed
@@ -142,6 +168,14 @@ A few honest reflections, since I was asked for them.
   a number on the accuracy checklist so it can't drift; copyrighted figures left out of a public
   repo in favour of placeholders + provenance. None of these are the flashy choice. All of them are
   what makes the artifact safe to put in front of a sharp audience.
+
+- **Finishing is its own discipline, and its honesty lives at the boundary.** The most interesting
+  decisions came not while building but while *publishing* — the moment "fine to show in a talk"
+  and "fine to host on the open web" came apart. The kintsugi note exists because the right answer
+  there wasn't to hide the gap or quietly overstep it, but to *name* it. And the bugs that mattered
+  most were the ones only the finished, shipped object revealed. A working thing and a camera-ready
+  thing are not the same thing, and the distance between them is mostly looking, and telling the
+  truth about what you see.
 
 - **The recursion was not lost on either of us.** This is an information agent helping a scholar
   build a talk about information agents liberating scholars from the modes information arrives in —
@@ -178,8 +212,13 @@ locally, drop licensed figures into `img/` per [`img/README.md`](img/README.md).
 ## Credits & provenance
 
 Built by Vincent with Claude. The economic figures are sourced (CAMPOP; Bank of England *A
-Millennium of Macroeconomic Data*; ONS) and committed to the spine's accuracy checklist. The
-children's-drawings sources — Thatcher & Greyling (1998), Kodama et al. (2017), Nesta's *Draw the
-Internet* (Dries De Roeck, 2019), and Botturi (2021) / Botturi & Addimando (2025), the last two
-**CC BY 4.0** — are cited in full on each gallery plate and in `img/README.md`. Copyrighted figures
-are **not** redistributed in this repository.
+Millennium of Macroeconomic Data*; ONS) and committed to the spine's accuracy checklist.
+
+The children's-drawings sources are cited in full on each gallery plate and in `img/README.md`.
+Their licences were checked before publishing: Kodama et al. (2017) and Botturi & Addimando (2025)
+are **CC BY 4.0**; Nesta's *Draw the Internet* (Dries De Roeck, 2019) is **CC BY-NC-SA 4.0**;
+Botturi (2021) is **CC BY 4.0**; and Thatcher & Greyling (1998) is **© Elsevier, all rights
+reserved**. Rather than re-host the figures, this repository keeps the gallery as **credited gaps**
+— a deliberate kintsugi choice explained in a short note that appears, in the builder's voice, only
+on the live page (where the figures are absent). The real drawings live locally for the talk and at
+the sources linked on each plate. **No copyrighted figure is redistributed here.**
