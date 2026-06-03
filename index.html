@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Information Agents — interactive explainers</title>
 <!-- inline SVG favicon — keeps the page self-contained and silences /favicon.ico -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23FAF9F6'/><circle cx='16' cy='16' r='9' fill='none' stroke='%230050FF' stroke-width='3'/><circle cx='16' cy='16' r='3.6' fill='%23F38020'/></svg>">
@@ -335,7 +335,7 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
 .cmap .cmapclose b{color:var(--blue)}
 
 /* ===== beat 1 · stakes — the knowledge-worker explainer =========== */
-.loc-wide{max-width:66rem; width:100%; gap:1rem}
+.loc-wide{max-width:66rem; width:100%; min-width:0; gap:1rem}
 .stk{width:100%; display:flex; flex-direction:column; gap:.75rem}
 .stk-bar{display:flex; height:76px; width:100%; border:1.5px solid var(--ink); overflow:hidden;
   background:repeating-linear-gradient(45deg,transparent,transparent 7px,rgba(17,17,17,.03) 7px,rgba(17,17,17,.03) 8px)}
@@ -369,11 +369,11 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
 @media(max-width:900px){ #stakes{min-height:auto} }
 
 /* ===== beat 2 · misnomer & metaphor — the drawings gallery ======== */
-.gal{width:100%; display:flex; flex-direction:column; gap:.6rem}
+.gal{width:100%; min-width:0; display:flex; flex-direction:column; gap:.6rem}
 .gal-axis{display:flex; justify-content:space-between; align-items:center; font-family:var(--mono);
   font-size:.62rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em}
 .gal-axis .gal-arrow{color:var(--orange); letter-spacing:.04em}
-.gal-strip{display:flex; gap:.7rem; overflow-x:auto; padding:.3rem .1rem .6rem; scroll-behavior:smooth}
+.gal-strip{display:flex; gap:.7rem; min-width:0; overflow-x:auto; padding:.3rem .1rem .6rem; scroll-behavior:smooth}
 .plate{flex:0 0 auto; width:172px; margin:0; cursor:pointer; transition:.3s; opacity:.62;
   display:flex; flex-direction:column; gap:.35rem}
 .plate.focus{opacity:1}
@@ -438,6 +438,60 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
   letter-spacing:.16em; font-size:.55rem; margin-bottom:.4rem}
 .gal-kintsugi em{color:var(--ink); font-style:italic}
 .gal-kintsugi .kt-sign{color:var(--orange); font-weight:700; white-space:nowrap}
+
+/* ====================== device-sensitive / mobile ====================== */
+/* stable full-height sections on mobile (dodge the URL-bar 100vh jump) */
+@supports (min-height:100svh){ section{min-height:100svh} }
+
+/* QR card on the cover — for the projected / desktop view so the audience can
+   scan in. Hidden once the viewer is already on a small screen. */
+.qr-card{position:absolute; left:max(4vw,env(safe-area-inset-left,0)); bottom:5vh;
+  display:flex; align-items:center; gap:.72rem; text-decoration:none}
+.qr-frame{width:104px; height:104px; padding:8px; background:#fff;
+  border:1.4px solid var(--hair); box-shadow:3px 3px 0 rgba(17,17,17,.10); flex:0 0 auto}
+.qr-frame .qr-svg{display:block; width:100%; height:100%}
+.qr-cap{font-family:var(--mono); font-size:.6rem; line-height:1.4; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--ink-soft); text-align:left; max-width:7.2rem}
+.qr-card:hover .qr-frame{box-shadow:3px 3px 0 var(--blue)}
+@media (max-width:860px){ .qr-card{display:none} }
+
+/* no horizontal scroll on phones — let wide explainers shrink / scroll internally */
+@media (max-width:900px){
+  section{ overflow-x:clip }
+  .station .loc{ min-width:0; max-width:100% }
+}
+
+/* touch devices: relax the one-beat-per-screen grid into a natural scroll,
+   single column, bigger tap targets */
+html.touch section{ grid-template-columns:1fr; min-height:auto; gap:1.6rem; padding:6vh 6vw }
+html.touch section.solo{ min-height:100svh }
+html.touch button.pp{ padding:.62rem 1rem; font-size:.82rem }
+html.touch .stk-ctl input[type=range]{ min-width:150px }
+html.touch #tlSvg{ max-height:none }            /* size by width; the page scrolls */
+html.touch .tl-tip{ font-size:.72rem; max-width:62vw }
+html.touch .prodme{ color:var(--orange) }
+
+/* short viewports = landscape phones: trim vertical chrome so a beat fits */
+@media (max-height:560px) and (orientation:landscape){
+  section{ padding:4vh 6vw }
+  .prose h2{ font-size:1.55rem; margin-bottom:.12em }
+  .prose p{ font-size:.92rem; margin-bottom:.6rem }
+  #cover h1{ font-size:clamp(2rem,8.5vw,3.2rem) }
+}
+
+/* rotate-to-landscape nudge (touch + portrait, dismissible) */
+#rotate{ position:fixed; inset:0; z-index:300; display:none; background:var(--paper);
+  align-items:center; justify-content:center; text-align:center; padding:2rem }
+#rotate .rot-inner{ max-width:22rem; display:flex; flex-direction:column; gap:1.1rem; align-items:center }
+#rotate .rot-glyph{ font-size:2.8rem; color:var(--blue); line-height:1;
+  animation:rotnudge 2.6s ease-in-out infinite }
+@keyframes rotnudge{ 0%,18%{transform:rotate(0)} 50%,68%{transform:rotate(90deg)} 100%{transform:rotate(0)} }
+#rotate p{ font-family:var(--mono); font-size:.92rem; line-height:1.5; color:var(--ink); margin:0 }
+#rotate .rot-dismiss{ font-family:var(--mono); font-size:.7rem; color:var(--ink-soft);
+  text-decoration:underline; cursor:pointer }
+@media (orientation:portrait) and (max-width:900px){
+  html.touch #rotate:not(.dismissed){ display:flex }
+}
 </style>
 </head>
 <body>
@@ -456,10 +510,24 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
   <div class="wrap">
     <div class="sub" style="color:var(--ink-soft)">Vincent Wang-Maścianica · HAI Lab · The University of Oxford</div>
     <h1>Not <span class="strike">coding</span> agents.<br>Information agents.</h1>
-    <div class="sub">scroll ↓ &nbsp;·&nbsp; or use ↑ ↓ keys</div>
+    <div class="sub" id="coverHint">scroll ↓ &nbsp;·&nbsp; or use ↑ ↓ keys</div>
   </div>
+  <a class="qr-card" id="qrCard" href="https://vinnylarouge.github.io/information-agents/"
+     aria-label="Scan to open this deck on your phone">
+    <span class="qr-frame"><svg class="qr-svg" viewBox="0 0 41 41" width="100%" height="100%" shape-rendering="crispEdges" role="img" aria-label="QR code linking to the talk URL"><rect width="41" height="41" fill="#fff"/><path d="M4 4h7v1h-7zM12 4h1v1h-1zM14 4h2v1h-2zM17 4h2v1h-2zM21 4h2v1h-2zM25 4h2v1h-2zM30 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM13 5h2v1h-2zM20 5h1v1h-1zM25 5h2v1h-2zM28 5h1v1h-1zM30 5h1v1h-1zM36 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM12 6h2v1h-2zM15 6h1v1h-1zM17 6h1v1h-1zM19 6h3v1h-3zM25 6h1v1h-1zM27 6h2v1h-2zM30 6h1v1h-1zM32 6h3v1h-3zM36 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM16 7h1v1h-1zM19 7h1v1h-1zM23 7h1v1h-1zM25 7h3v1h-3zM30 7h1v1h-1zM32 7h3v1h-3zM36 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM19 8h1v1h-1zM21 8h1v1h-1zM23 8h1v1h-1zM26 8h1v1h-1zM30 8h1v1h-1zM32 8h3v1h-3zM36 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h2v1h-2zM15 9h1v1h-1zM17 9h3v1h-3zM21 9h3v1h-3zM26 9h1v1h-1zM28 9h1v1h-1zM30 9h1v1h-1zM36 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h7v1h-7zM13 11h3v1h-3zM18 11h3v1h-3zM22 11h3v1h-3zM4 12h1v1h-1zM6 12h1v1h-1zM10 12h2v1h-2zM14 12h1v1h-1zM16 12h1v1h-1zM18 12h1v1h-1zM20 12h1v1h-1zM24 12h1v1h-1zM27 12h1v1h-1zM31 12h1v1h-1zM34 12h1v1h-1zM36 12h1v1h-1zM5 13h4v1h-4zM11 13h1v1h-1zM13 13h2v1h-2zM16 13h2v1h-2zM19 13h3v1h-3zM23 13h1v1h-1zM27 13h2v1h-2zM30 13h1v1h-1zM33 13h1v1h-1zM36 13h1v1h-1zM5 14h6v1h-6zM12 14h1v1h-1zM16 14h1v1h-1zM19 14h2v1h-2zM23 14h1v1h-1zM25 14h1v1h-1zM27 14h2v1h-2zM30 14h1v1h-1zM33 14h2v1h-2zM36 14h1v1h-1zM5 15h2v1h-2zM12 15h6v1h-6zM19 15h3v1h-3zM24 15h1v1h-1zM26 15h3v1h-3zM31 15h3v1h-3zM36 15h1v1h-1zM4 16h2v1h-2zM7 16h2v1h-2zM10 16h1v1h-1zM13 16h1v1h-1zM15 16h3v1h-3zM21 16h1v1h-1zM23 16h2v1h-2zM28 16h1v1h-1zM30 16h1v1h-1zM4 17h1v1h-1zM6 17h1v1h-1zM11 17h2v1h-2zM16 17h1v1h-1zM21 17h1v1h-1zM27 17h2v1h-2zM30 17h2v1h-2zM33 17h1v1h-1zM35 17h2v1h-2zM7 18h1v1h-1zM9 18h2v1h-2zM12 18h5v1h-5zM18 18h2v1h-2zM21 18h7v1h-7zM32 18h2v1h-2zM36 18h1v1h-1zM4 19h5v1h-5zM11 19h1v1h-1zM13 19h1v1h-1zM15 19h1v1h-1zM17 19h2v1h-2zM22 19h1v1h-1zM26 19h1v1h-1zM28 19h3v1h-3zM33 19h1v1h-1zM5 20h1v1h-1zM7 20h1v1h-1zM9 20h2v1h-2zM14 20h1v1h-1zM16 20h1v1h-1zM19 20h2v1h-2zM23 20h2v1h-2zM28 20h1v1h-1zM30 20h2v1h-2zM33 20h1v1h-1zM35 20h1v1h-1zM4 21h1v1h-1zM6 21h1v1h-1zM8 21h2v1h-2zM12 21h2v1h-2zM15 21h5v1h-5zM22 21h9v1h-9zM33 21h1v1h-1zM36 21h1v1h-1zM4 22h2v1h-2zM7 22h1v1h-1zM9 22h2v1h-2zM13 22h11v1h-11zM27 22h3v1h-3zM31 22h1v1h-1zM33 22h2v1h-2zM36 22h1v1h-1zM5 23h1v1h-1zM7 23h2v1h-2zM12 23h1v1h-1zM15 23h1v1h-1zM17 23h1v1h-1zM19 23h1v1h-1zM22 23h3v1h-3zM27 23h3v1h-3zM32 23h2v1h-2zM35 23h1v1h-1zM4 24h1v1h-1zM10 24h1v1h-1zM12 24h1v1h-1zM16 24h1v1h-1zM19 24h6v1h-6zM28 24h1v1h-1zM30 24h2v1h-2zM35 24h1v1h-1zM7 25h1v1h-1zM9 25h1v1h-1zM12 25h2v1h-2zM15 25h1v1h-1zM17 25h2v1h-2zM20 25h1v1h-1zM22 25h1v1h-1zM26 25h2v1h-2zM30 25h2v1h-2zM33 25h2v1h-2zM36 25h1v1h-1zM4 26h4v1h-4zM10 26h1v1h-1zM12 26h1v1h-1zM14 26h2v1h-2zM17 26h2v1h-2zM20 26h2v1h-2zM23 26h1v1h-1zM26 26h3v1h-3zM30 26h1v1h-1zM32 26h1v1h-1zM36 26h1v1h-1zM6 27h4v1h-4zM11 27h2v1h-2zM15 27h2v1h-2zM18 27h3v1h-3zM23 27h2v1h-2zM27 27h2v1h-2zM30 27h4v1h-4zM36 27h1v1h-1zM4 28h4v1h-4zM10 28h1v1h-1zM12 28h1v1h-1zM20 28h1v1h-1zM24 28h1v1h-1zM28 28h5v1h-5zM35 28h2v1h-2zM12 29h1v1h-1zM14 29h1v1h-1zM16 29h2v1h-2zM19 29h3v1h-3zM23 29h2v1h-2zM28 29h1v1h-1zM32 29h1v1h-1zM36 29h1v1h-1zM4 30h7v1h-7zM12 30h1v1h-1zM14 30h1v1h-1zM16 30h1v1h-1zM18 30h2v1h-2zM23 30h1v1h-1zM25 30h1v1h-1zM28 30h1v1h-1zM30 30h1v1h-1zM32 30h3v1h-3zM36 30h1v1h-1zM4 31h1v1h-1zM10 31h1v1h-1zM13 31h1v1h-1zM17 31h2v1h-2zM20 31h2v1h-2zM24 31h1v1h-1zM27 31h2v1h-2zM32 31h2v1h-2zM35 31h2v1h-2zM4 32h1v1h-1zM6 32h3v1h-3zM10 32h1v1h-1zM13 32h1v1h-1zM15 32h1v1h-1zM18 32h2v1h-2zM21 32h1v1h-1zM23 32h2v1h-2zM27 32h6v1h-6zM4 33h1v1h-1zM6 33h3v1h-3zM10 33h1v1h-1zM13 33h1v1h-1zM15 33h1v1h-1zM18 33h1v1h-1zM21 33h1v1h-1zM23 33h1v1h-1zM25 33h3v1h-3zM29 33h1v1h-1zM31 33h2v1h-2zM35 33h2v1h-2zM4 34h1v1h-1zM6 34h3v1h-3zM10 34h1v1h-1zM12 34h1v1h-1zM16 34h2v1h-2zM19 34h1v1h-1zM21 34h3v1h-3zM27 34h1v1h-1zM29 34h1v1h-1zM31 34h3v1h-3zM35 34h2v1h-2zM4 35h1v1h-1zM10 35h1v1h-1zM13 35h2v1h-2zM23 35h1v1h-1zM26 35h1v1h-1zM28 35h6v1h-6zM4 36h7v1h-7zM12 36h3v1h-3zM17 36h1v1h-1zM19 36h1v1h-1zM23 36h1v1h-1zM28 36h1v1h-1zM31 36h3v1h-3zM36 36h1v1h-1z" fill="#111"/></svg></span>
+    <span class="qr-cap">scan to follow<br>along on your phone</span>
+  </a>
   <div class="scroll-hint">↓</div>
 </section>
+
+<!-- rotate-to-landscape nudge (touch + portrait only; dismissible) -->
+<div id="rotate" aria-hidden="true">
+  <div class="rot-inner">
+    <span class="rot-glyph">▢</span>
+    <p><b>Turn your phone sideways.</b><br>The explainers are built wide — landscape gives them room.</p>
+    <span class="rot-dismiss">tap to continue anyway</span>
+  </div>
+</div>
 
 <!-- ===================== 0 · THE LINEAGE (timeline) =================== -->
 <section id="timeline">
@@ -1108,23 +1176,26 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     el('line',{class:'tl-grid',x1:PL,y1:Y(v),x2:PR,y2:Y(v)},svg);
     el('text',{class:'tl-ytick',x:PL-7,y:Y(v)+3},svg).textContent=lab;
   });
-  // SWE-bench tier bands — right-edge label + a full-width hover zone that
+  // bind hover (desktop) + tap (touch) to a tip target; tap auto-hides
+  function bindTip(elm,html){
+    elm.addEventListener('mousemove',e=>showTip(html,e));
+    elm.addEventListener('mouseleave',hideTip);
+    elm.addEventListener('click',e=>{showTip(html,e); clearTimeout(elm._tt); elm._tt=setTimeout(hideTip,2800);});
+  }
+  // SWE-bench tier bands — right-edge label + a full-width hover/tap zone that
   // explains what that SWE-bench performance level can actually do.
   TIERS.forEach(t=>{
     const tipHtml='<span class="tt-tier">'+t.lab+(t.lab==='pre-model'?'':'-class')+'</span>'+t.text;
     const zone=el('rect',{class:'tl-hoverzone',x:PL,y:Y(t.hi),width:PW,height:(t.hi-t.lo)*PH},svg);
-    zone.addEventListener('mousemove',e=>showTip(tipHtml,e));
-    zone.addEventListener('mouseleave',hideTip);
+    bindTip(zone,tipHtml);
     const lt=el('text',{class:'tl-tier-lab',x:PR+8,y:Y(t.cap)+3},svg); lt.textContent=t.lab;
-    lt.addEventListener('mousemove',e=>showTip(tipHtml,e));
-    lt.addEventListener('mouseleave',hideTip);
+    bindTip(lt,tipHtml);
   });
-  // SWE-bench axis title — hover explains the benchmark
+  // SWE-bench axis title — hover/tap explains the benchmark
   const yt=el('text',{class:'tl-tier-lab',x:18,y:Y(.5),transform:`rotate(-90 18 ${Y(.5)})`},svg);
   yt.setAttribute('text-anchor','middle'); yt.textContent='SWE-bench (%) →';
   const yTip='<span class="tt-tier">SWE-bench Verified</span>Percentage of real GitHub issues resolved autonomously — the benchmark that defines the field. Pre-LLM entries projected at 0%.';
-  yt.addEventListener('mousemove',e=>showTip(yTip,e));
-  yt.addEventListener('mouseleave',hideTip);
+  bindTip(yt,yTip);
 
   // calendar axis group
   const calG=el('g',{class:'tl-axis-grp',id:'tlCalAxis'},svg);
@@ -1167,6 +1238,7 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     let lab;
     if(isMark(n)){
       g.setAttribute('transform',`translate(${X(calFrac(n.year))},0)`);
+      el('rect',{class:'hit',x:-9,y:PT,width:18,height:PB-PT,fill:'transparent','pointer-events':'all'},g); // finger-sized tap target
       el('line',{class:'markline',x1:0,y1:PT,x2:0,y2:PB},g);
       el('line',{class:'markcap',x1:-3.5,y1:PT,x2:3.5,y2:PT},g);          // top serif
       el('circle',{class:'markcap-dot',r:2.4,cy:PT},g);
@@ -1175,6 +1247,7 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
       lab=el('text',{class:'nlab mlab',y:ly},g); lab.textContent=n.label;
     } else {
       g.setAttribute('transform',`translate(${X(calFrac(n.year))},${Y(n.cap)})`);
+      el('circle',{class:'hit',r:14,fill:'transparent','pointer-events':'all'},g);   // finger-sized tap target
       el('circle',{class:'ring',r:12,stroke:n.kind==='fail'||n.kind==='agent'||n.kind==='now'?'var(--orange)':'var(--blue)','stroke-width':1.5},g);
       const r=n.kind==='now'?7:6;
       el('circle',{class:'dot',r},g);
@@ -1482,6 +1555,28 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();go(idx-1);}
   });
   onScroll();
+})();
+
+/* ===================== device sensitivity / mobile ===================== */
+(function(){
+  const root=document.documentElement;
+  const touch = matchMedia('(hover:none) and (pointer:coarse)').matches;
+  if(touch) root.classList.add('touch');
+
+  if(touch){
+    // keyboard hints make no sense on a phone; rewrite the affordance copy
+    const hint=document.getElementById('coverHint');
+    if(hint) hint.textContent='swipe ↑ ↓ to move · tap the controls';
+    document.querySelectorAll('.prodme').forEach(p=>{
+      p.textContent = p.textContent.replace(/\bhover\b/gi,'tap');
+    });
+    const r=document.querySelector('#tlReadout .rmeta b');
+    if(r) r.textContent = r.textContent.replace(/hover/gi,'tap');
+  }
+
+  // rotate-to-landscape nudge: CSS reveals it in portrait; tap to dismiss
+  const rot=document.getElementById('rotate');
+  if(rot) rot.addEventListener('click',()=>rot.classList.add('dismissed'));
 })();
 </script>
 </body>
