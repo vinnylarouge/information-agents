@@ -463,8 +463,15 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
 
 /* touch devices: relax the one-beat-per-screen grid into a natural scroll,
    single column, bigger tap targets */
-html.touch section{ grid-template-columns:1fr; min-height:auto; gap:1.6rem; padding:6vh 6vw }
-html.touch section.solo{ min-height:100svh }
+/* each beat is its own page again: a full screen, content centred, generous
+   breathing room, and a hairline page-edge so beats are clearly separated even
+   when a tall one needs a little internal scroll */
+html.touch section{ grid-template-columns:1fr; min-height:100vh; min-height:100svh;
+  gap:2rem; padding:10vh 7vw; align-content:center }
+html.touch section.solo{ min-height:100vh; min-height:100svh }
+html.touch section:not(#cover){ border-top:1.4px solid var(--hair) }
+/* these two carry id-level min-height:auto overrides — re-assert full-screen on touch */
+html.touch #timeline, html.touch #stakes{ min-height:100vh; min-height:100svh }
 html.touch button.pp{ padding:.62rem 1rem; font-size:.82rem }
 html.touch .stk-ctl input[type=range]{ min-width:150px }
 html.touch #tlSvg{ max-height:none }            /* size by width; the page scrolls */
@@ -473,7 +480,7 @@ html.touch .prodme{ color:var(--orange) }
 
 /* short viewports = landscape phones: trim vertical chrome so a beat fits */
 @media (max-height:560px) and (orientation:landscape){
-  section{ padding:4vh 6vw }
+  section, html.touch section{ padding:5vh 7vw; gap:1.1rem }
   .prose h2{ font-size:1.55rem; margin-bottom:.12em }
   .prose p{ font-size:.92rem; margin-bottom:.6rem }
   #cover h1{ font-size:clamp(2rem,8.5vw,3.2rem) }
