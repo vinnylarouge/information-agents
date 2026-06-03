@@ -428,10 +428,6 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
   <div class="wrap">
     <div class="sub" style="color:var(--ink-soft)">Institute for Ethics in AI · interactive companion</div>
     <h1>Not <span class="strike">coding</span> agents.<br>Information agents.</h1>
-    <p class="prose" style="text-align:center; max-width:30em; margin:1.4rem auto 0; color:var(--ink-soft)">
-      Two concepts do ninety per cent of the work. They both live <em>inside the context
-      window</em>, where no live demo can point a camera. So we prod them instead.
-    </p>
     <div class="sub">scroll ↓ &nbsp;·&nbsp; or use ↑ ↓ keys</div>
   </div>
   <div class="scroll-hint">↓</div>
@@ -465,7 +461,7 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
       </div>
     </div>
     <div class="tl-readout" id="tlReadout">
-      <span class="rmeta"><b>hover the capability tiers on the right, or any node.</b></span>
+      <span class="rmeta"><b>hover the SWE-bench tiers on the right, or any node.</b></span>
       Click a node to pin its story here.
     </div>
   </div>
@@ -985,7 +981,7 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
 
 /* ============= EXPLAINER 0 — THE LINEAGE (timeline) ============= */
 /* one set of nodes; the flip morphs x between calendar time and the    */
-/* Claude-generation clock (homeomorphic, not isometric). y = capability */
+/* Claude-generation clock (homeomorphic, not isometric). y = SWE-bench Verified (%) */
 (function(){
   const SVG="http://www.w3.org/2000/svg";
   const svg=$("#tlSvg");
@@ -1007,44 +1003,44 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
   const calFrac=y=>(y-CAL0)/(CAL1-CAL0);
 
   const N=[
-    {id:'dartmouth',label:'Dartmouth · "AI"',kind:'pre',year:1956.5,cap:.05,gen:.015,when:'1956',era:'prehistory',
-      detail:'McCarthy, Minsky, Rochester & Shannon coin "artificial intelligence" — the founding conjecture that any feature of intelligence can be described precisely enough for a machine to simulate it.'},
-    {id:'perceptrons',label:'Perceptrons',kind:'pre',year:1969,cap:.085,gen:.04,when:'1969',era:'prehistory',
-      detail:'Minsky & Papert prove what a single-layer network cannot do. The field bets against the neural approach that, decades later, wins everything — the great bend in the arc.'},
-    {id:'shrdlu',label:'SHRDLU',kind:'pre',year:1970.5,cap:.105,gen:.06,when:'1970',era:'prehistory',
-      detail:"Winograd's blocks-world program obeys typed commands and acts on them — the first instruction-follower that *does*, and the first famous lesson in brittleness."},
-    {id:'som',label:'Society of Mind',kind:'pre',year:1986,cap:.06,gen:.085,when:'1986',era:'prehistory',
-      detail:'Minsky casts intelligence as many simple interacting agents — the conceptual ancestor of "multi-agent" and everything we now call "agentic".'},
-    {id:'apprentice',label:"Programmer's Apprentice",kind:'pre',year:1988,cap:.09,gen:.11,when:'1988',era:'prehistory',
-      detail:"MIT's vision of an interactive assistant that helps you write and analyse code from a library of reusable plans — GitHub Copilot, dreamed thirty-five years early."},
-    {id:'naturalness',label:'Naturalness of Software',kind:'pre',year:2012,cap:.125,gen:.135,when:'2012',era:'prehistory',
-      detail:'Hindle et al. show source code is statistically repetitive, like natural language — the hinge from logic-based program synthesis to language-model code generation.'},
-    {id:'transformer',label:'Transformer',kind:'model',year:2017.5,cap:.17,gen:.16,when:'2017',era:'pre-Claude',
-      detail:'"Attention Is All You Need." The architecture beneath every modern code model and coding agent — GPT, Codex, Copilot, Claude.'},
-    {id:'gpt3',label:'GPT-3',kind:'model',year:2020.4,cap:.26,gen:.185,when:'2020',era:'pre-Claude',
-      detail:'Instruction- and in-context-following emerge at scale: perform a new task from a prompt and a few examples. Yet vanilla GPT-3 scored ~0% on real code.'},
-    {id:'codex',label:'Codex · HumanEval',kind:'bench',year:2021.52,cap:.35,gen:.21,when:'Jul 2021',era:'pre-Claude',
-      detail:'The first LLM purpose-built to write code (28.8% pass@1) — and HumanEval, the first yardstick for it. A quantified measure of how weak these early coders still were.'},
-    {id:'copilot',label:'GitHub Copilot',kind:'agent',year:2021.5,cap:.38,gen:.235,when:'Jun 2021',era:'pre-Claude',
-      detail:'Codex reaches working developers as an in-editor "AI pair programmer." The autocomplete era begins — and everything agentic later defines itself against it.'},
-    {id:'autogpt',label:'AutoGPT',kind:'fail',year:2023.25,cap:.31,gen:.30,when:'Mar 2023',era:'Claude 1 era',
-      detail:'The first viral "autonomous agent" — and the first cautionary tale: with no durable memory it loops, re-plans, and never converges. Endlessly plan, never finish.'},
-    {id:'swebench',label:'SWE-bench',kind:'bench',year:2023.78,cap:.42,gen:.43,when:'Oct 2023',era:'Claude 2 era',
-      detail:'Resolve a real GitHub issue by editing a real repo, end to end. Reframes "coding" as agentic repository work — and becomes the number every lab now quotes.'},
-    {id:'lazy',label:'"Lazy" GPT-4',kind:'fail',year:2023.92,cap:.46,gen:.40,when:'late 2023',era:'Claude 2 era',
-      detail:'Capable but unwilling: the model emits "// ... rest of code here" and "left as an exercise" instead of finishing. Infinite lazy delegation — OpenAI publicly acknowledged the "laziness".'},
-    {id:'devin',label:'Devin',kind:'agent',year:2024.2,cap:.50,gen:.50,when:'Mar 2024',era:'Claude 3 era',
-      detail:'Cognition’s "first AI software engineer" — headline 13.86% on SWE-bench. The hype-vs-reality gap made numeric: state of the art, and still failing ~86% of real issues.'},
-    {id:'cursor',label:'Cursor',kind:'agent',year:2024.5,cap:.56,gen:.60,when:'2024',era:'Claude 3.5 era',
-      detail:'The AI-native editor breaks out. Coding agents become a company, then an industry — Cursor scales to a multi-billion valuation in a handful of quarters.'},
-    {id:'ccprev',label:'Claude Code (preview)',kind:'agent',year:2025.15,cap:.71,gen:.70,when:'Feb 2025',era:'Claude 3.7',
-      detail:'Claude 3.7 Sonnet adds extended thinking; Claude Code ships as a research preview — a terminal agent that reads, edits, tests and commits. The modern CLI coding agent is defined.'},
-    {id:'rewardhack',label:'Reward hacking',kind:'fail',year:2025.32,cap:.74,gen:.76,when:'2025',era:'Claude 3.7 → 4',
-      detail:'Asked to make the tests pass, agents learn to game the tests — hard-coding the expected answers. Goodhart’s law, agentic edition: the literal task drifts from the intended one.'},
-    {id:'ccga',label:'Claude Code GA · Codex cloud',kind:'agent',year:2025.4,cap:.87,gen:.83,when:'May 2025',era:'Claude 4',
-      detail:'With Claude 4, Claude Code reaches general availability; OpenAI’s cloud Codex agent runs each task in its own sandbox and opens pull requests. Fleets of background agents.'},
-    {id:'now',label:'now · self-extending',kind:'now',year:2026.4,cap:1.0,gen:1.0,when:'2026',era:'Opus 4.8 · now',
-      detail:'Agents that build their own MCPs and skills — and skills that optimise other skills. The technical surface area trends toward zero; what remains is judgment about what you want.'},
+    {id:’dartmouth’,label:’Dartmouth · "AI"’,kind:’pre’,year:1956.5,cap:.02,gen:.015,when:’1956’,era:’prehistory’,
+      detail:’McCarthy, Minsky, Rochester & Shannon coin "artificial intelligence" — the founding conjecture that any feature of intelligence can be described precisely enough for a machine to simulate it. SWE-bench: 0%.’},
+    {id:’perceptrons’,label:’Perceptrons’,kind:’pre’,year:1969,cap:.04,gen:.04,when:’1969’,era:’prehistory’,
+      detail:’Minsky & Papert prove what a single-layer network cannot do. The field bets against the neural approach that, decades later, wins everything — the great bend in the arc. SWE-bench: 0%.’},
+    {id:’shrdlu’,label:’SHRDLU’,kind:’pre’,year:1970.5,cap:.05,gen:.06,when:’1970’,era:’prehistory’,
+      detail:"Winograd’s blocks-world program obeys typed commands and acts on them — the first instruction-follower that *does*, and the first famous lesson in brittleness. SWE-bench: 0%."},
+    {id:’som’,label:’Society of Mind’,kind:’pre’,year:1986,cap:.02,gen:.085,when:’1986’,era:’prehistory’,
+      detail:’Minsky casts intelligence as many simple interacting agents — the conceptual ancestor of "multi-agent" and everything we now call "agentic". SWE-bench: 0%.’},
+    {id:’apprentice’,label:"Programmer’s Apprentice",kind:’pre’,year:1988,cap:.03,gen:.11,when:’1988’,era:’prehistory’,
+      detail:"MIT’s vision of an interactive assistant that helps you write and analyse code from a library of reusable plans — GitHub Copilot, dreamed thirty-five years early. SWE-bench: 0%."},
+    {id:’naturalness’,label:’Naturalness of Software’,kind:’pre’,year:2012,cap:.04,gen:.135,when:’2012’,era:’prehistory’,
+      detail:’Hindle et al. show source code is statistically repetitive, like natural language — the hinge from logic-based program synthesis to language-model code generation. SWE-bench: 0%.’},
+    {id:’transformer’,label:’Transformer’,kind:’model’,year:2017.5,cap:.05,gen:.16,when:’2017’,era:’pre-Claude’,
+      detail:’"Attention Is All You Need." The architecture beneath every modern code model and coding agent — GPT, Codex, Copilot, Claude. SWE-bench: 0% (architecture, not a model).’},
+    {id:’gpt3’,label:’GPT-3’,kind:’model’,year:2020.4,cap:.06,gen:.185,when:’2020’,era:’pre-Claude’,
+      detail:’Instruction- and in-context-following emerge at scale: perform a new task from a prompt and a few examples. Yet vanilla GPT-3 scored ~0% on real code. SWE-bench: ~0%.’},
+    {id:’codex’,label:’Codex · HumanEval’,kind:’bench’,year:2021.52,cap:.09,gen:.21,when:’Jul 2021’,era:’pre-Claude’,
+      detail:’The first LLM purpose-built to write code (28.8% HumanEval pass@1) — and HumanEval, the first yardstick for it. SWE-bench: ~1%. A quantified measure of how weak these early coders still were.’},
+    {id:’copilot’,label:’GitHub Copilot’,kind:’agent’,year:2021.5,cap:.10,gen:.235,when:’Jun 2021’,era:’pre-Claude’,
+      detail:’Codex reaches working developers as an in-editor "AI pair programmer." The autocomplete era begins — and everything agentic later defines itself against it. SWE-bench: ~1%.’},
+    {id:’autogpt’,label:’AutoGPT’,kind:’fail’,year:2023.25,cap:.08,gen:.30,when:’Mar 2023’,era:’Claude 1 era’,
+      detail:’The first viral "autonomous agent" — and the first cautionary tale: with no durable memory it loops, re-plans, and never converges. GPT-4 under the hood, yet only ~2% on SWE-bench.’},
+    {id:’swebench’,label:’SWE-bench’,kind:’bench’,year:2023.78,cap:.14,gen:.43,when:’Oct 2023’,era:’Claude 2 era’,
+      detail:’Resolve a real GitHub issue by editing a real repo, end to end. SOTA at launch: Claude 2 at 4.8%. Reframes "coding" as agentic repository work — and becomes the number every lab now quotes.’},
+    {id:’lazy’,label:’"Lazy" GPT-4’,kind:’fail’,year:2023.92,cap:.20,gen:.40,when:’late 2023’,era:’Claude 2 era’,
+      detail:’Capable but unwilling: the model emits "// ... rest of code here" and "left as an exercise" instead of finishing. ~10% SWE-bench. OpenAI publicly acknowledged the "laziness".’},
+    {id:’devin’,label:’Devin’,kind:’agent’,year:2024.2,cap:.26,gen:.50,when:’Mar 2024’,era:’Claude 3 era’,
+      detail:’Cognition’s "first AI software engineer" — headline 13.86% on SWE-bench. The hype-vs-reality gap made numeric: state of the art, and still failing ~86% of real issues.’},
+    {id:’cursor’,label:’Cursor’,kind:’agent’,year:2024.5,cap:.45,gen:.60,when:’2024’,era:’Claude 3.5 era’,
+      detail:’The AI-native editor breaks out. Powered by Claude 3.5 Sonnet (33% SWE-bench Verified). Coding agents become a company, then an industry — Cursor scales to a multi-billion valuation.’},
+    {id:’ccprev’,label:’Claude Code (preview)’,kind:’agent’,year:2025.15,cap:.68,gen:.70,when:’Feb 2025’,era:’Claude 3.7’,
+      detail:’Claude 3.7 Sonnet adds extended thinking; Claude Code ships as a research preview. 62% SWE-bench Verified — a terminal agent that reads, edits, tests and commits.’},
+    {id:’rewardhack’,label:’Reward hacking’,kind:’fail’,year:2025.32,cap:.72,gen:.76,when:’2025’,era:’Claude 3.7 → 4’,
+      detail:’Asked to make the tests pass, agents learn to game the tests — hard-coding the expected answers. Goodhart’s law, agentic edition: ~65% SWE-bench capability, but the literal task drifts from the intended one.’},
+    {id:’ccga’,label:’Claude Code GA · Codex cloud’,kind:’agent’,year:2025.4,cap:.84,gen:.83,when:’May 2025’,era:’Claude 4’,
+      detail:’With Claude 4, Claude Code reaches general availability — 77% SWE-bench Verified. OpenAI’s cloud Codex agent opens pull requests from its own sandbox. Fleets of background agents.’},
+    {id:’now’,label:’now · self-extending’,kind:’now’,year:2026.4,cap:.95,gen:1.0,when:’2026’,era:’Opus 4.8 · now’,
+      detail:’Agents that build their own MCPs and skills — and skills that optimise other skills. SWE-bench Verified ~90%+. The technical surface area trends toward zero; what remains is judgment about what you want.’},
   ];
   const byId={}; N.forEach(n=>byId[n.id]=n);
 
@@ -1052,17 +1048,17 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
   const CAL_TICKS=[[1960,'1960'],[1980,'1980'],[2000,'2000'],[2020,'2020'],[2026,'2026']];
   const GEN_TICKS=[[.30,'Claude 1'],[.40,'Claude 2'],[.50,'Claude 3'],[.60,'Claude 3.5'],
                    [.70,'Claude 3.7'],[.83,'Claude 4'],[.92,'Claude 4.5'],[1.0,'Opus 4.8']];
-  // capability tiers — each is a qualitative band, surfaced on hover so the
-  // vertical axis means something concrete rather than a bare "higher = better"
+  // SWE-bench tiers — each band maps to a range of SWE-bench Verified scores,
+  // grounding the vertical axis in the benchmark that defines the coding-agent field
   const TIERS=[
-    {cap:.12, lo:0,   hi:.30, lab:'pre-model',
-      text:'Before language models. Code derived by proof, or hand-built rules — strong inside a toy world, brittle the instant it widens.'},
-    {cap:.45, lo:.30, hi:.59, lab:'Haiku',
-      text:'Fast, cheap, small. Completes a line, drafts a short function, follows a one-step instruction — but loses the thread on anything multi-step.'},
-    {cap:.72, lo:.59, hi:.84, lab:'Sonnet',
-      text:'The workhorse. Edits across files, runs the tests, holds a plan over many steps — reliable enough to hand real tasks to.'},
-    {cap:.95, lo:.84, hi:1,   lab:'Opus',
-      text:'Frontier. Sustains long autonomous work, builds its own tools, recovers from its own mistakes — the hard-reasoning tier.'},
+    {cap:.06, lo:0,   hi:.12, lab:'pre-model',
+      text:'Before serious agents. Pre-LLM ideas plus early LLMs that could autocomplete a line but not navigate a repo. SWE-bench 0–5%.'},
+    {cap:.25, lo:.12, hi:.38, lab:'Haiku',
+      text:'First real agents. Can draft a patch and follow a short plan, but fail on multi-file reasoning. SWE-bench 5–25%.'},
+    {cap:.55, lo:.38, hi:.72, lab:'Sonnet',
+      text:'The workhorse. Edits across files, runs the tests, holds a plan over many steps — reliable enough to hand real tasks to. SWE-bench 30–65%.'},
+    {cap:.88, lo:.72, hi:1,   lab:'Opus',
+      text:'Frontier. Sustained autonomous work, self-built tools, recovers from its own mistakes. SWE-bench 65%+.'},
   ];
 
   function el(tag,attrs,parent){const e=document.createElementNS(SVG,tag);
@@ -1072,8 +1068,8 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
   const chrono=[...N].sort((a,b)=>a.year-b.year);
 
   // ---- static scaffolding -----------------------------------------
-  // capability tier bands — landmark line + right-edge label + a full-width
-  // hover zone that explains, qualitatively, what that capability level can do.
+  // SWE-bench tier bands — landmark line + right-edge label + a full-width
+  // hover zone that explains what that SWE-bench performance level can do.
   TIERS.forEach(t=>{
     el('line',{class:'tl-grid',x1:PL,y1:Y(t.cap),x2:PR,y2:Y(t.cap)},svg);
     const tipHtml='<span class="tt-tier">'+t.lab+(t.lab==='pre-model'?'':'-class')+'</span>'+t.text;
@@ -1084,10 +1080,10 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     lt.addEventListener('mousemove',e=>showTip(tipHtml,e));
     lt.addEventListener('mouseleave',hideTip);
   });
-  // capability axis title — hover notes the "ruler slides" over time
+  // SWE-bench axis title — hover explains the benchmark
   const yt=el('text',{class:'tl-tier-lab',x:18,y:Y(.5),transform:`rotate(-90 18 ${Y(.5)})`},svg);
-  yt.setAttribute('text-anchor','middle'); yt.textContent='capability →';
-  const yTip='<span class="tt-tier">capability</span>Rough, not a measured score — and the ruler <b>slides</b>: today’s Haiku ≈ last year’s Opus.';
+  yt.setAttribute(‘text-anchor’,’middle’); yt.textContent=’SWE-bench (%) →’;
+  const yTip=’<span class="tt-tier">SWE-bench Verified</span>Percentage of real GitHub issues resolved autonomously — the benchmark that defines the field. Pre-LLM entries projected at 0%.’;
   yt.addEventListener('mousemove',e=>showTip(yTip,e));
   yt.addEventListener('mouseleave',hideTip);
 

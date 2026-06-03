@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat /Users/vwm/CLAUDE.md 2>/dev/null; echo \"---AGENTS.md---\"; cat /Users/vwm/Desktop/tinkering/claudeseminar/AGENTS.md 2>/dev/null; echo \"---environments/AGENTS.md---\"; cat /Users/vwm/Desktop/tinkering/claudeseminar/environments/AGENTS.md 2>/dev/null)"
+    ]
+  }
+}
