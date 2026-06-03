@@ -7,13 +7,15 @@
 # A separate talk that happens to live alongside this one — kept local.
 /gervais/
 
-# Gallery figures are copyrighted (Thatcher & Greyling © Elsevier; Kodama ©
-# Springer; the Nesta screenshot © Nesta/De Roeck). They are NOT redistributed
-# here. The deck shows labelled placeholders + full provenance + the live Nesta
-# link in their absence (see img/README.md). Drop your own licensed copies into
-# img/ to populate the gallery locally for a talk.
+# Gallery figures: ignore everything by default, then allow only the three we
+# cleared to host (Botturi CC BY; Kodama and Nesta credited). The Thatcher &
+# Greyling (1998) figure is © Elsevier and stays OUT — the deck renders it as a
+# credited kintsugi gap (see the note in index.html + img/README.md).
 img/*.png
 img/*.jpg
 img/*.jpeg
 img/*.webp
 img/*.gif
+!img/creepyguy.png
+!img/drawingtheinternet.jpg
+!img/insidethesmartphone.png

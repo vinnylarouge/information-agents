@@ -178,7 +178,9 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
 #timeline .tl-head p{max-width:62em}
 .tl-stage{width:100%; display:flex; flex-direction:column; gap:.55rem}
 .tl-frame{width:100%; border:1.4px solid var(--hair); background:#fff; position:relative}
-#tlSvg{width:100%; height:auto; max-height:60vh; display:block; margin:0 auto}
+/* cap the SVG by *available* height (not just width) so the whole station fits
+   one screen on any Mac aspect ratio — the chart letterboxes rather than overhang */
+#tlSvg{width:100%; height:auto; max-height:calc(100vh - 23rem); display:block; margin:0 auto}
 /* floating tooltip — qualitative capability / node hover */
 .tl-tip{position:absolute; pointer-events:none; opacity:0; z-index:25; max-width:248px;
   background:var(--ink); color:var(--paper); font-family:var(--mono); font-size:.64rem; line-height:1.4;
@@ -186,12 +188,15 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
   box-shadow:3px 3px 0 rgba(17,17,17,.12)}
 .tl-tip b{color:#fff}
 .tl-tip .tt-tier{color:var(--blue); filter:brightness(1.6); font-weight:700; display:block; margin-bottom:.15rem}
+.tl-tip .tt-swe{display:block; margin-top:.2rem; color:#ffb37a; font-weight:700}
+.tl-tip .tt-swe.alt{color:var(--paper); opacity:.7; font-weight:400; font-style:italic}
 .tl-hoverzone{fill:transparent; cursor:help}
 .tl-tier-lab{cursor:help}
 .tl-foot{display:flex; gap:1.4rem; align-items:baseline; flex-wrap:wrap; justify-content:space-between}
 /* axis + tier scaffolding */
 .tl-grid{stroke:var(--hair); stroke-width:1}
 .tl-tier-lab{font-family:var(--mono); font-size:10px; fill:var(--ink-soft); text-anchor:start}
+.tl-ytick{font-family:var(--mono); font-size:9px; fill:var(--ink-soft); text-anchor:end; opacity:.8}
 .tl-axis-lab{font-family:var(--mono); font-size:10px; fill:var(--ink); text-anchor:middle}
 .tl-axis-tick{stroke:var(--ink); stroke-width:1; opacity:.5}
 .tl-axis-grp{transition:opacity .5s}
@@ -215,6 +220,23 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
 .tlnode.now   .dot{fill:var(--orange); stroke:var(--orange)}
 .tlnode .strike{stroke:var(--orange); stroke-width:1.6; opacity:0}      /* failure = struck through */
 .tlnode.fail .strike{opacity:.95}
+/* mark = an idea/event entering the timeline (book, workshop, paper,
+   architecture): a dated event line, no capability height */
+.tlnode.book,.tlnode.event{cursor:pointer}
+.markline,.markleader{stroke:var(--ink-soft); stroke-width:1.1; stroke-dasharray:2 3.5; opacity:.4;
+  transition:opacity .25s, stroke .25s, stroke-width .25s}
+.markcap{stroke:var(--ink-soft); stroke-width:1.6; opacity:.6; transition:stroke .25s, opacity .25s}
+.markcap-dot{fill:var(--ink-soft); opacity:.6; transition:fill .25s, opacity .25s}
+.tlnode.book:hover .markline,.tlnode.book.active .markline,.tlnode.book:hover .markleader,.tlnode.book.active .markleader,
+.tlnode.event:hover .markline,.tlnode.event.active .markline,.tlnode.event:hover .markleader,.tlnode.event.active .markleader{opacity:.85; stroke:var(--blue); stroke-width:1.5}
+.tlnode.book:hover .markcap,.tlnode.book.active .markcap,.tlnode.book:hover .markcap-dot,.tlnode.book.active .markcap-dot,
+.tlnode.event:hover .markcap,.tlnode.event.active .markcap,.tlnode.event:hover .markcap-dot,.tlnode.event.active .markcap-dot{stroke:var(--blue); fill:var(--blue); opacity:1}
+.tlnode .mlab{fill:var(--ink-soft)}
+.tlnode.book .mlab{font-style:italic}                      /* books are titles */
+.tlnode.book:hover .mlab,.tlnode.book.active .mlab,
+.tlnode.event:hover .mlab,.tlnode.event.active .mlab{fill:var(--blue)}
+.tl-readout .bk-rel{color:var(--blue); font-weight:700}
+.tl-readout.fail .bk-rel{color:var(--orange)}
 .tlnode .warn{font-family:var(--mono); font-size:9px; fill:var(--orange); text-anchor:middle; dominant-baseline:middle; pointer-events:none}
 .tlnode.active .ring{opacity:1}
 .tlnode.now .dot{animation:tlpulse 1.8s ease-in-out infinite}
@@ -237,6 +259,7 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
 .tl-legend i.l-agent{background:var(--orange); border-color:var(--orange)}
 .tl-legend i.l-fail{background:var(--paper); border-color:var(--orange); border-style:dashed}
 .tl-legend i.l-bench{background:#fff; border-color:var(--blue); border-radius:1px}
+.tl-legend i.l-book{width:2px; height:13px; border-radius:0; background:var(--ink-soft); border:none}
 @media(max-width:900px){
   #timeline{min-height:auto}
   .tlnode .nlab{font-size:11px}
@@ -364,6 +387,11 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
   background:repeating-linear-gradient(45deg,#fbfaf7,#fbfaf7 8px,#f1efe9 8px,#f1efe9 9px)}
 .plate-ph b{color:var(--blue); font-size:.62rem}
 .plate-ph .ph-glyph{font-size:1.3rem; opacity:.5}
+/* the deliberate, credited hold-out (© Elsevier) — a gold kintsugi seam, not a TODO */
+.plate-ph.kt{background:repeating-linear-gradient(45deg,#fbfaf7,#fbfaf7 8px,#f7ede0 8px,#f7ede0 9px)}
+.plate-ph.kt{border-left:2px solid var(--orange)}
+.plate-ph.kt b{color:var(--orange)}
+.plate-ph.kt .ph-glyph{color:var(--orange); opacity:.7}
 .plate figcaption{font-family:var(--mono); font-size:.6rem; line-height:1.35; color:var(--ink); text-align:left}
 .plate .py{color:var(--orange); font-weight:700; margin-right:.3rem}
 /* richness meter */
@@ -450,10 +478,10 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
       <span class="prodme">› prod me — hover the tiers & nodes</span>
     </div>
     <div class="tl-foot">
-      <p class="tl-cap" id="tlCap"><b>Calendar time.</b> Seventy years on one axis — the modern
-         story crushes into the sliver on the right. <em>Flip the clock.</em></p>
+      <p class="tl-cap" id="tlCap"><b>Calendar time.</b> Over a century on one axis — from Bogdanov's
+         deep root to now, the modern story crushes into the sliver on the right. <em>Flip the clock.</em></p>
       <div class="tl-legend">
-        <span><i class="l-pre"></i>prehistory</span>
+        <span><i class="l-book"></i>idea · event</span>
         <span><i class="l-model"></i>model</span>
         <span><i class="l-bench"></i>benchmark</span>
         <span><i class="l-agent"></i>agent</span>
@@ -538,14 +566,15 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
       </div>
       <p class="gal-kintsugi" id="galKintsugi" hidden>
         <span class="kt-head">a note, in the builder's voice</span>
-        These frames sit empty on purpose. I checked the licences: most of these drawings are
-        openly licensed (Kodama and Botturi are CC&nbsp;BY; Nesta is CC&nbsp;BY-NC-SA) and one —
-        Thatcher&nbsp;&amp;&nbsp;Greyling, 1998 — is © Elsevier, not mine to repost. But even where
-        the licence would let me, I've kept the credited gap instead of the picture: this beat is
-        about <em>who</em> makes a thing and <em>how</em> it reaches you, and a frame that names its
-        source tells that more honestly than a borrowed image would. Kintsugi — don't hide the join;
-        fill it with gold and let it show. The living gallery is one click away at Nesta's, which is
-        exactly where the talk goes, live. A line I drew; one Vincent kept.
+        One frame here stays empty on purpose. We checked the licences: three of these drawings
+        I could clear to show you — Botturi is openly licensed (CC&nbsp;BY); the Kodama and Nesta
+        figures we credit in full — but the earliest, Thatcher&nbsp;&amp;&nbsp;Greyling&nbsp;(1998),
+        is © Elsevier, and that one isn't mine to repost. So I've left its frame as a credited gap
+        rather than a borrowed picture: this beat is about <em>who</em> makes a thing and <em>how</em>
+        it reaches you, and a frame that names its source tells that more honestly than a lifted image
+        would. Kintsugi — don't hide the join; fill it with gold and let it show. The whole living
+        gallery is one click away at Nesta's, which is exactly where the talk goes, live.
+        A line I drew; one Vincent kept.
         <span class="kt-sign">— Claude</span>
       </p>
     </div>  </div>
@@ -998,68 +1027,74 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
   const H=380, PADL=66,PADR=120,PADT=34,PADB=56;
   const PL=PADL, PR=1000-PADR, PT=PADT, PB=H-PADB;       // plot box
   const PW=PR-PL, PH=PB-PT;
-  const CAL0=1955, CAL1=2026.6;
+  const CAL0=1910, CAL1=2026.6;
   const X=f=>PL+f*PW, Y=cap=>PB-cap*PH;
   const calFrac=y=>(y-CAL0)/(CAL1-CAL0);
 
   const N=[
-    {id:’dartmouth’,label:’Dartmouth · "AI"’,kind:’pre’,year:1956.5,cap:.02,gen:.015,when:’1956’,era:’prehistory’,
-      detail:’McCarthy, Minsky, Rochester & Shannon coin "artificial intelligence" — the founding conjecture that any feature of intelligence can be described precisely enough for a machine to simulate it. SWE-bench: 0%.’},
-    {id:’perceptrons’,label:’Perceptrons’,kind:’pre’,year:1969,cap:.04,gen:.04,when:’1969’,era:’prehistory’,
-      detail:’Minsky & Papert prove what a single-layer network cannot do. The field bets against the neural approach that, decades later, wins everything — the great bend in the arc. SWE-bench: 0%.’},
-    {id:’shrdlu’,label:’SHRDLU’,kind:’pre’,year:1970.5,cap:.05,gen:.06,when:’1970’,era:’prehistory’,
-      detail:"Winograd’s blocks-world program obeys typed commands and acts on them — the first instruction-follower that *does*, and the first famous lesson in brittleness. SWE-bench: 0%."},
-    {id:’som’,label:’Society of Mind’,kind:’pre’,year:1986,cap:.02,gen:.085,when:’1986’,era:’prehistory’,
-      detail:’Minsky casts intelligence as many simple interacting agents — the conceptual ancestor of "multi-agent" and everything we now call "agentic". SWE-bench: 0%.’},
-    {id:’apprentice’,label:"Programmer’s Apprentice",kind:’pre’,year:1988,cap:.03,gen:.11,when:’1988’,era:’prehistory’,
-      detail:"MIT’s vision of an interactive assistant that helps you write and analyse code from a library of reusable plans — GitHub Copilot, dreamed thirty-five years early. SWE-bench: 0%."},
-    {id:’naturalness’,label:’Naturalness of Software’,kind:’pre’,year:2012,cap:.04,gen:.135,when:’2012’,era:’prehistory’,
-      detail:’Hindle et al. show source code is statistically repetitive, like natural language — the hinge from logic-based program synthesis to language-model code generation. SWE-bench: 0%.’},
-    {id:’transformer’,label:’Transformer’,kind:’model’,year:2017.5,cap:.05,gen:.16,when:’2017’,era:’pre-Claude’,
-      detail:’"Attention Is All You Need." The architecture beneath every modern code model and coding agent — GPT, Codex, Copilot, Claude. SWE-bench: 0% (architecture, not a model).’},
-    {id:’gpt3’,label:’GPT-3’,kind:’model’,year:2020.4,cap:.06,gen:.185,when:’2020’,era:’pre-Claude’,
-      detail:’Instruction- and in-context-following emerge at scale: perform a new task from a prompt and a few examples. Yet vanilla GPT-3 scored ~0% on real code. SWE-bench: ~0%.’},
-    {id:’codex’,label:’Codex · HumanEval’,kind:’bench’,year:2021.52,cap:.09,gen:.21,when:’Jul 2021’,era:’pre-Claude’,
-      detail:’The first LLM purpose-built to write code (28.8% HumanEval pass@1) — and HumanEval, the first yardstick for it. SWE-bench: ~1%. A quantified measure of how weak these early coders still were.’},
-    {id:’copilot’,label:’GitHub Copilot’,kind:’agent’,year:2021.5,cap:.10,gen:.235,when:’Jun 2021’,era:’pre-Claude’,
-      detail:’Codex reaches working developers as an in-editor "AI pair programmer." The autocomplete era begins — and everything agentic later defines itself against it. SWE-bench: ~1%.’},
-    {id:’autogpt’,label:’AutoGPT’,kind:’fail’,year:2023.25,cap:.08,gen:.30,when:’Mar 2023’,era:’Claude 1 era’,
-      detail:’The first viral "autonomous agent" — and the first cautionary tale: with no durable memory it loops, re-plans, and never converges. GPT-4 under the hood, yet only ~2% on SWE-bench.’},
-    {id:’swebench’,label:’SWE-bench’,kind:’bench’,year:2023.78,cap:.14,gen:.43,when:’Oct 2023’,era:’Claude 2 era’,
-      detail:’Resolve a real GitHub issue by editing a real repo, end to end. SOTA at launch: Claude 2 at 4.8%. Reframes "coding" as agentic repository work — and becomes the number every lab now quotes.’},
-    {id:’lazy’,label:’"Lazy" GPT-4’,kind:’fail’,year:2023.92,cap:.20,gen:.40,when:’late 2023’,era:’Claude 2 era’,
-      detail:’Capable but unwilling: the model emits "// ... rest of code here" and "left as an exercise" instead of finishing. ~10% SWE-bench. OpenAI publicly acknowledged the "laziness".’},
-    {id:’devin’,label:’Devin’,kind:’agent’,year:2024.2,cap:.26,gen:.50,when:’Mar 2024’,era:’Claude 3 era’,
-      detail:’Cognition’s "first AI software engineer" — headline 13.86% on SWE-bench. The hype-vs-reality gap made numeric: state of the art, and still failing ~86% of real issues.’},
-    {id:’cursor’,label:’Cursor’,kind:’agent’,year:2024.5,cap:.45,gen:.60,when:’2024’,era:’Claude 3.5 era’,
-      detail:’The AI-native editor breaks out. Powered by Claude 3.5 Sonnet (33% SWE-bench Verified). Coding agents become a company, then an industry — Cursor scales to a multi-billion valuation.’},
-    {id:’ccprev’,label:’Claude Code (preview)’,kind:’agent’,year:2025.15,cap:.68,gen:.70,when:’Feb 2025’,era:’Claude 3.7’,
-      detail:’Claude 3.7 Sonnet adds extended thinking; Claude Code ships as a research preview. 62% SWE-bench Verified — a terminal agent that reads, edits, tests and commits.’},
-    {id:’rewardhack’,label:’Reward hacking’,kind:’fail’,year:2025.32,cap:.72,gen:.76,when:’2025’,era:’Claude 3.7 → 4’,
-      detail:’Asked to make the tests pass, agents learn to game the tests — hard-coding the expected answers. Goodhart’s law, agentic edition: ~65% SWE-bench capability, but the literal task drifts from the intended one.’},
-    {id:’ccga’,label:’Claude Code GA · Codex cloud’,kind:’agent’,year:2025.4,cap:.84,gen:.83,when:’May 2025’,era:’Claude 4’,
-      detail:’With Claude 4, Claude Code reaches general availability — 77% SWE-bench Verified. OpenAI’s cloud Codex agent opens pull requests from its own sandbox. Fleets of background agents.’},
-    {id:’now’,label:’now · self-extending’,kind:’now’,year:2026.4,cap:.95,gen:1.0,when:’2026’,era:’Opus 4.8 · now’,
-      detail:’Agents that build their own MCPs and skills — and skills that optimise other skills. SWE-bench Verified ~90%+. The technical surface area trends toward zero; what remains is judgment about what you want.’},
+    {id:'tektology',label:'Tektology',kind:'book',year:1913,gen:.006,when:'1913–22',era:'deep roots',
+      detail:'Alexander Bogdanov’s <b>Tektology: Universal Organization Science</b> — arguably the first systems theory, decades before Wiener’s cybernetics or von Bertalanffy. Its wager: physical, biological and social systems all obey the same laws of <em>organization</em>. <span class="bk-rel">On the chart:</span> the deepest root — organisation treated as a subject in its own right. <span class="bk-rel">In the talk:</span> a fleet of agents is an organisational problem before it is a coding one; coordination is the old idea the capability curve finally cashes out. An idea, placed by date — not benchmarked.'},
+    {id:'dartmouth',label:'Dartmouth · "AI"',kind:'event',year:1956.5,cap:.02,gen:.015,when:'1956',era:'prehistory',
+      detail:'McCarthy, Minsky, Rochester & Shannon coin "artificial intelligence" — the founding conjecture that any feature of intelligence can be described precisely enough for a machine to simulate it. SWE-bench: 0%.'},
+    {id:'perceptrons',label:'Perceptrons',kind:'book',year:1969,gen:.04,when:'1969',era:'prehistory',
+      detail:'Minsky & Papert’s <b>Perceptrons</b> proves what a single-layer network cannot do — not even XOR — and helps freeze neural-net funding for a generation. <span class="bk-rel">On the chart:</span> the great bend in the arc — the field bets <em>against</em> the approach that, decades later, wins everything on this very axis. <span class="bk-rel">In the talk:</span> the lineage isn’t a straight climb; the method now resolving ~90% of real issues was once the abandoned bet. An idea, placed by date — not benchmarked.'},
+    {id:'shrdlu',label:'SHRDLU',kind:'event',year:1970.5,cap:.05,gen:.06,when:'1970',era:'prehistory',
+      detail:'Winograd’s blocks-world program obeys typed commands and acts on them — the first instruction-follower that *does*, and the first famous lesson in brittleness. SWE-bench: 0%.'},
+    {id:'som',label:'Society of Mind',kind:'book',year:1986,gen:.085,when:'1986',era:'prehistory',
+      detail:'Minsky’s <b>The Society of Mind</b> casts intelligence as a swarm of simple, mindless interacting agents — no central self, just organisation. <span class="bk-rel">On the chart:</span> the conceptual ancestor of "multi-agent" and everything we now call "agentic". <span class="bk-rel">In the talk:</span> it pairs with Tektology — both say the unit of intelligence is an <em>organisation of parts</em>, which is exactly how a fleet of coding agents behaves. An idea, placed by date — not benchmarked.'},
+    {id:'apprentice',label:"Programmer’s Apprentice",kind:'event',year:1988,cap:.03,gen:.11,when:'1988',era:'prehistory',
+      detail:'MIT’s vision of an interactive assistant that helps you write and analyse code from a library of reusable plans — GitHub Copilot, dreamed thirty-five years early. SWE-bench: 0%.'},
+    {id:'naturalness',label:'Naturalness of Software',kind:'event',year:2012,cap:.04,gen:.135,when:'2012',era:'prehistory',
+      detail:'Hindle et al. show source code is statistically repetitive, like natural language — the hinge from logic-based program synthesis to language-model code generation. SWE-bench: 0%.'},
+    {id:'transformer',label:'Transformer',kind:'event',year:2017.5,cap:.05,gen:.16,when:'2017',era:'pre-Claude',
+      detail:'"Attention Is All You Need." The architecture beneath every modern code model and coding agent — GPT, Codex, Copilot, Claude. SWE-bench: 0% (architecture, not a model).'},
+    {id:'gpt3',label:'GPT-3',kind:'model',year:2020.4,cap:0,gen:.185,when:'2020',era:'pre-Claude',
+      detail:'Instruction- and in-context-following emerge at scale: perform a new task from a prompt and a few examples. Yet vanilla GPT-3 scored ~0% on real code. SWE-bench: ~0%.'},
+    {id:'codex',label:'Codex · HumanEval',kind:'bench',year:2021.52,cap:.01,gen:.21,when:'Jul 2021',era:'pre-Claude',
+      detail:'The first LLM purpose-built to write code (28.8% HumanEval pass@1) — and HumanEval, the first yardstick for it. SWE-bench: ~1%. A quantified measure of how weak these early coders still were.'},
+    {id:'copilot',label:'GitHub Copilot',kind:'agent',year:2021.5,cap:.01,gen:.235,when:'Jun 2021',era:'pre-Claude',
+      detail:'Codex reaches working developers as an in-editor "AI pair programmer." The autocomplete era begins — and everything agentic later defines itself against it. SWE-bench: ~1%.'},
+    {id:'autogpt',label:'AutoGPT',kind:'fail',year:2023.25,cap:.02,gen:.30,when:'Mar 2023',era:'Claude 1 era',
+      detail:'The first viral "autonomous agent" — and the first cautionary tale: with no durable memory it loops, re-plans, and never converges. GPT-4 under the hood, yet only ~2% on SWE-bench.'},
+    {id:'swebench',label:'SWE-bench',kind:'bench',year:2023.78,cap:.048,gen:.43,when:'Oct 2023',era:'Claude 2 era',
+      detail:'Resolve a real GitHub issue by editing a real repo, end to end. SOTA at launch: Claude 2 at 4.8%. Reframes "coding" as agentic repository work — and becomes the number every lab now quotes.'},
+    {id:'lazy',label:'"Lazy" GPT-4',kind:'fail',year:2023.92,cap:.10,gen:.40,when:'late 2023',era:'Claude 2 era',
+      detail:'Capable but unwilling: the model emits "// ... rest of code here" and "left as an exercise" instead of finishing. ~10% SWE-bench. OpenAI publicly acknowledged the "laziness".'},
+    {id:'devin',label:'Devin',kind:'agent',year:2024.2,cap:.1386,gen:.50,when:'Mar 2024',era:'Claude 3 era',
+      detail:'Cognition’s "first AI software engineer" — headline 13.86% on SWE-bench. The hype-vs-reality gap made numeric: state of the art, and still failing ~86% of real issues.'},
+    {id:'cursor',label:'Cursor',kind:'agent',year:2024.5,cap:.33,gen:.60,when:'2024',era:'Claude 3.5 era',
+      detail:'The AI-native editor breaks out. Powered by Claude 3.5 Sonnet (33% SWE-bench Verified). Coding agents become a company, then an industry — Cursor scales to a multi-billion valuation.'},
+    {id:'ccprev',label:'Claude Code (preview)',kind:'agent',year:2025.15,cap:.62,gen:.70,when:'Feb 2025',era:'Claude 3.7',
+      detail:'Claude 3.7 Sonnet adds extended thinking; Claude Code ships as a research preview. 62% SWE-bench Verified — a terminal agent that reads, edits, tests and commits.'},
+    {id:'rewardhack',label:'Reward hacking',kind:'fail',year:2025.32,cap:.65,gen:.76,when:'2025',era:'Claude 3.7 → 4',
+      detail:'Asked to make the tests pass, agents learn to game the tests — hard-coding the expected answers. Goodhart’s law, agentic edition: ~65% SWE-bench capability, but the literal task drifts from the intended one.'},
+    {id:'ccga',label:'Claude Code GA · Codex cloud',kind:'agent',year:2025.4,cap:.77,gen:.83,when:'May 2025',era:'Claude 4',
+      detail:'With Claude 4, Claude Code reaches general availability — 77% SWE-bench Verified. OpenAI’s cloud Codex agent opens pull requests from its own sandbox. Fleets of background agents.'},
+    {id:'now',label:'now · self-extending',kind:'now',year:2026.4,cap:.90,gen:1.0,when:'2026',era:'Opus 4.8 · the Mythos era',
+      detail:'Agents that build their own MCPs and skills — and skills that optimise other skills. ~90%+ SWE-bench on the open flagship (Opus 4.8); the very frontier is now gated — the invite-only Mythos preview, released to defensive-security partners rather than the public. The technical surface area trends toward zero; what remains is judgment about what you want.'},
   ];
   const byId={}; N.forEach(n=>byId[n.id]=n);
 
   // axis label sets
-  const CAL_TICKS=[[1960,'1960'],[1980,'1980'],[2000,'2000'],[2020,'2020'],[2026,'2026']];
-  const GEN_TICKS=[[.30,'Claude 1'],[.40,'Claude 2'],[.50,'Claude 3'],[.60,'Claude 3.5'],
-                   [.70,'Claude 3.7'],[.83,'Claude 4'],[.92,'Claude 4.5'],[1.0,'Opus 4.8']];
+  const CAL_TICKS=[[1920,'1920'],[1960,'1960'],[1980,'1980'],[2000,'2000'],[2020,'2020']];
+  // Anthropic's own naming: generation numbers through Claude 3, then the
+  // Opus/Sonnet tier+version convention; the frontier now is the Mythos era.
+  const GEN_TICKS=[[.30,'Claude 1'],[.40,'Claude 2'],[.50,'Claude 3'],[.60,'3.5 Sonnet'],
+                   [.70,'3.7 Sonnet'],[.83,'Opus 4'],[.92,'Opus 4.5'],[1.0,'Opus 4.8']];
   // SWE-bench tiers — each band maps to a range of SWE-bench Verified scores,
   // grounding the vertical axis in the benchmark that defines the coding-agent field
   const TIERS=[
-    {cap:.06, lo:0,   hi:.12, lab:'pre-model',
+    {cap:.025, lo:0,   hi:.05, lab:'pre-model',
       text:'Before serious agents. Pre-LLM ideas plus early LLMs that could autocomplete a line but not navigate a repo. SWE-bench 0–5%.'},
-    {cap:.25, lo:.12, hi:.38, lab:'Haiku',
+    {cap:.15,  lo:.05, hi:.25, lab:'Haiku',
       text:'First real agents. Can draft a patch and follow a short plan, but fail on multi-file reasoning. SWE-bench 5–25%.'},
-    {cap:.55, lo:.38, hi:.72, lab:'Sonnet',
-      text:'The workhorse. Edits across files, runs the tests, holds a plan over many steps — reliable enough to hand real tasks to. SWE-bench 30–65%.'},
-    {cap:.88, lo:.72, hi:1,   lab:'Opus',
+    {cap:.45,  lo:.25, hi:.65, lab:'Sonnet',
+      text:'The workhorse. Edits across files, runs the tests, holds a plan over many steps — reliable enough to hand real tasks to. SWE-bench 25–65%.'},
+    {cap:.80,  lo:.65, hi:1,   lab:'Opus',
       text:'Frontier. Sustained autonomous work, self-built tools, recovers from its own mistakes. SWE-bench 65%+.'},
   ];
+  // numeric y-axis — the vertical position of every system IS its SWE-bench score
+  const YTICKS=[[0,'0'],[.25,'25'],[.5,'50'],[.75,'75'],[1,'100%']];
 
   function el(tag,attrs,parent){const e=document.createElementNS(SVG,tag);
     for(const k in attrs)e.setAttribute(k,attrs[k]); if(parent)parent.appendChild(e); return e;}
@@ -1068,10 +1103,14 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
   const chrono=[...N].sort((a,b)=>a.year-b.year);
 
   // ---- static scaffolding -----------------------------------------
-  // SWE-bench tier bands — landmark line + right-edge label + a full-width
-  // hover zone that explains what that SWE-bench performance level can do.
+  // numeric SWE-bench gridlines (0/25/50/75/100%) — these ARE the axis now
+  YTICKS.forEach(([v,lab])=>{
+    el('line',{class:'tl-grid',x1:PL,y1:Y(v),x2:PR,y2:Y(v)},svg);
+    el('text',{class:'tl-ytick',x:PL-7,y:Y(v)+3},svg).textContent=lab;
+  });
+  // SWE-bench tier bands — right-edge label + a full-width hover zone that
+  // explains what that SWE-bench performance level can actually do.
   TIERS.forEach(t=>{
-    el('line',{class:'tl-grid',x1:PL,y1:Y(t.cap),x2:PR,y2:Y(t.cap)},svg);
     const tipHtml='<span class="tt-tier">'+t.lab+(t.lab==='pre-model'?'':'-class')+'</span>'+t.text;
     const zone=el('rect',{class:'tl-hoverzone',x:PL,y:Y(t.hi),width:PW,height:(t.hi-t.lo)*PH},svg);
     zone.addEventListener('mousemove',e=>showTip(tipHtml,e));
@@ -1082,8 +1121,8 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
   });
   // SWE-bench axis title — hover explains the benchmark
   const yt=el('text',{class:'tl-tier-lab',x:18,y:Y(.5),transform:`rotate(-90 18 ${Y(.5)})`},svg);
-  yt.setAttribute(‘text-anchor’,’middle’); yt.textContent=’SWE-bench (%) →’;
-  const yTip=’<span class="tt-tier">SWE-bench Verified</span>Percentage of real GitHub issues resolved autonomously — the benchmark that defines the field. Pre-LLM entries projected at 0%.’;
+  yt.setAttribute('text-anchor','middle'); yt.textContent='SWE-bench (%) →';
+  const yTip='<span class="tt-tier">SWE-bench Verified</span>Percentage of real GitHub issues resolved autonomously — the benchmark that defines the field. Pre-LLM entries projected at 0%.';
   yt.addEventListener('mousemove',e=>showTip(yTip,e));
   yt.addEventListener('mouseleave',hideTip);
 
@@ -1105,19 +1144,49 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
   // playhead (for walk)
   const playhead=el('line',{class:'tl-playhead',x1:0,y1:PT-6,x2:0,y2:PB+6},svg);
 
+  // SWE-bench Verified score per node, surfaced on hover. Pre-LLM and
+  // architecture entries are projected at ~0%; books aren't benchmarked.
+  const SWE={
+    dartmouth:'0%', shrdlu:'0%', apprentice:'0%', naturalness:'0%',
+    transformer:'0% (architecture, not a model)', gpt3:'~0%',
+    codex:'~1% (28.8% HumanEval)', copilot:'~1%', autogpt:'~2%',
+    swebench:'4.8% at launch (Claude 2)', lazy:'~10%', devin:'13.86%',
+    cursor:'33% (Claude 3.5 Sonnet)', ccprev:'62%', rewardhack:'~65%',
+    ccga:'77% (Claude 4)', now:'~90%+'};
+
+  // a "mark" is an idea/event entering the timeline, not a system with a
+  // SWE-bench score — book, workshop, demo, paper, architecture. It reads as a
+  // full-height event line, placed by date only. Stagger labels over two rows
+  // so close-together marks (1969/1970, 1986/1988) don't collide.
+  const isMark = n => n.kind==='book' || n.kind==='event';
+  N.filter(isMark).sort((a,b)=>a.year-b.year).forEach((n,i)=>n._row=i%2);
+
   // ---- nodes -------------------------------------------------------
   N.forEach(n=>{
     const g=el('g',{class:'tlnode '+n.kind,id:'tl-'+n.id},svg);
-    g.setAttribute('transform',`translate(${X(calFrac(n.year))},${Y(n.cap)})`);
-    el('circle',{class:'ring',r:12,stroke:n.kind==='fail'||n.kind==='agent'||n.kind==='now'?'var(--orange)':'var(--blue)','stroke-width':1.5},g);
-    const r=n.kind==='now'?7:6;
-    el('circle',{class:'dot',r},g);
-    if(n.kind==='fail') el('line',{class:'strike',x1:-8.5,y1:4,x2:8.5,y2:-4},g);
-    const below=n.cap>=.6;
-    const lab=el('text',{class:'nlab',y:below?20:-13},g); lab.textContent=n.label;
-    if(n.id==='now'){ lab.setAttribute('text-anchor','end'); lab.setAttribute('x',-11); lab.setAttribute('y',4); }
+    let lab;
+    if(isMark(n)){
+      g.setAttribute('transform',`translate(${X(calFrac(n.year))},0)`);
+      el('line',{class:'markline',x1:0,y1:PT,x2:0,y2:PB},g);
+      el('line',{class:'markcap',x1:-3.5,y1:PT,x2:3.5,y2:PT},g);          // top serif
+      el('circle',{class:'markcap-dot',r:2.4,cy:PT},g);
+      const ly = n._row ? PT-19 : PT-7;                                   // staggered label rows
+      if(n._row) el('line',{class:'markleader',x1:0,y1:ly+3,x2:0,y2:PT},g);
+      lab=el('text',{class:'nlab mlab',y:ly},g); lab.textContent=n.label;
+    } else {
+      g.setAttribute('transform',`translate(${X(calFrac(n.year))},${Y(n.cap)})`);
+      el('circle',{class:'ring',r:12,stroke:n.kind==='fail'||n.kind==='agent'||n.kind==='now'?'var(--orange)':'var(--blue)','stroke-width':1.5},g);
+      const r=n.kind==='now'?7:6;
+      el('circle',{class:'dot',r},g);
+      if(n.kind==='fail') el('line',{class:'strike',x1:-8.5,y1:4,x2:8.5,y2:-4},g);
+      const below=n.cap>=.6;
+      lab=el('text',{class:'nlab',y:below?20:-13},g); lab.textContent=n.label;
+      if(n.id==='now'){ lab.setAttribute('text-anchor','end'); lab.setAttribute('x',-11); lab.setAttribute('y',4); }
+    }
     n._g=g; n._lab=lab;
-    const htip='<b>'+n.label+'</b><br>'+n.when+' · '+n.era;
+    const htip='<b>'+n.label+'</b><br>'+n.when+' · '+n.era+(isMark(n)
+      ? '<span class="tt-swe alt">not a model — placed by date</span>'
+      : (SWE[n.id]?'<span class="tt-swe">SWE-bench: '+SWE[n.id]+'</span>':''));
     g.addEventListener('mousemove',e=>showTip(htip,e));
     g.addEventListener('mouseleave',hideTip);
     g.addEventListener('click',()=>{stopWalk();select(n);hideTip();});
@@ -1125,13 +1194,15 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
 
   function place(){
     N.forEach(n=>{const f=mode==='cal'?calFrac(n.year):n.gen;
-      n._g.setAttribute('transform',`translate(${X(f)},${Y(n.cap)})`);});
+      n._g.setAttribute('transform',isMark(n)?`translate(${X(f)},0)`:`translate(${X(f)},${Y(n.cap)})`);});
   }
   function refreshLabels(){
-    // calendar view: hide the crushed modern cluster's labels unless active;
-    // model view: everything is spread, so show all
+    // calendar view: hide the crushed modern cluster's labels unless active.
+    // model view: ideas/events collapse into deep time — hide their labels;
+    // the systems spread out, so show them all.
     N.forEach(n=>{
-      const show = mode==='gen' || n.year<2021.4 || n===active;
+      const show = isMark(n) ? (mode==='cal' || n===active)
+                             : (mode==='gen' || n.year<2021.4 || n===active);
       n._g.classList.toggle('show',show);
     });
   }
@@ -1150,7 +1221,7 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     genG.setAttribute('opacity',cal?0:1);
     $("#tlFlip").textContent=cal?'⇄ flip to model-generation time':'⇄ flip to calendar time';
     $("#tlCap").innerHTML=cal
-      ?'<b>Calendar time.</b> Seventy years on one axis — the modern story crushes into the sliver on the right. <em>Flip the clock.</em>'
+      ?'<b>Calendar time.</b> Over a century on one axis — from Bogdanov’s deep root to now, the modern story crushes into the sliver on the right. <em>Flip the clock.</em>'
       :'<b>Model-generation time</b>, ticked by Claude releases. Prehistory collapses to a point; the last three years fill the line. Same points, same order — <b>homeomorphic, not isometric</b>. That gap is the acceleration.';
   }
   function stopWalk(){ if(timer){clearInterval(timer);timer=null;} playhead.setAttribute('opacity',0); $("#tlWalk").textContent='▶ walk the eras'; }
@@ -1182,9 +1253,9 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
   // children asked to draw "the internet", oldest→newest. images are dropped
   // into site/img/ by the speaker (provenance + licence in img/README.md).
   const P=[
-    {year:'1998', rich:.95, file:'richmentalmodel-modularity.gif',
+    {year:'1998', rich:.95, omit:true, file:'richmentalmodel-modularity.gif',
      desc:'the internet as a wired, peopled network of the world',
-     prov:'Thatcher &amp; Greyling (1998), “Mental Models of the Internet,” <b>Int. J. Industrial Ergonomics</b> 22(4–5). © Elsevier — via institutional access.'},
+     prov:'Thatcher &amp; Greyling (1998), “Mental Models of the Internet,” <b>Int. J. Industrial Ergonomics</b> 22(4–5). © Elsevier — held out, not reposted. See the note below.'},
     {year:'2017', rich:.78, file:'creepyguy.png',
      desc:'cables, satellites — and “a creepy guy on the other end at Google”',
      prov:'Kodama, St. Jean, Subramaniam &amp; Taylor (2017), <b>Information Retrieval Journal</b> 20. © Springer — author copy on ResearchGate.',
@@ -1206,6 +1277,9 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     const fig=document.createElement('figure'); fig.className='plate'+(p.link?' linkcard':'');
     const inner = p.link
       ? '<a class="plate-link" href="'+p.link+'" target="_blank" rel="noopener"><span class="lk-glyph">↗</span><b>'+(p.linklabel||'open gallery')+'</b>open the live gallery</a>'
+      : p.omit
+      // a deliberate, credited gap — this figure is © Elsevier, kept out on purpose
+      ? '<span class="plate-ph kt"><span class="ph-glyph">⬚</span><b>© Elsevier — held out</b>credited, not reposted ↓</span>'
       : '<img src="img/'+p.file+'" alt="child’s drawing of the internet, '+p.year+'" onerror="this.style.display=\'none\'">'+
         '<span class="plate-ph"><span class="ph-glyph">▣</span><b>drop figure</b>img/'+p.file+'</span>';
     fig.innerHTML='<div class="plate-img">'+inner+'</div>'+
@@ -1232,12 +1306,13 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     timer=setInterval(()=>{ if(cur>=P.length-1){stop();return;} focus(cur+1); },1400);
   });
   focus(0,false);
-  // reveal the builder's note only where the figures couldn't be hosted (the open web);
-  // on a local copy with the real files present it stays hidden.
+  // reveal the builder's note when a figure is deliberately held out (the Elsevier
+  // plate, always) or when a local copy of a hostable figure failed to load.
   setTimeout(()=>{
-    const missing=P.some(p=>{ if(!p.file) return false; const im=p._el.querySelector('img');
+    const heldOut=P.some(p=>p.omit);
+    const failed=P.some(p=>{ if(!p.file||p.omit) return false; const im=p._el.querySelector('img');
       return im && im.complete && im.naturalWidth===0; });
-    const n=$("#galKintsugi"); if(missing && n) n.hidden=false;
+    const n=$("#galKintsugi"); if((heldOut||failed) && n) n.hidden=false;
   },1800);
 })();
 
