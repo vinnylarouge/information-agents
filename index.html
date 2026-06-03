@@ -203,7 +203,7 @@ button.pp:disabled{opacity:.35; cursor:not-allowed}
 .tl-deepband{fill:rgba(17,17,17,.035)}
 .tl-deepband-lab{font-family:var(--mono); font-size:9px; fill:var(--ink-soft); text-anchor:middle; letter-spacing:.06em; text-transform:uppercase}
 /* nodes */
-.tlnode{cursor:pointer; transition:transform .9s cubic-bezier(.5,.05,.2,1)}
+.tlnode{cursor:pointer}   /* the cal↔gen morph is tweened in JS (rAF) for cross-browser parity */
 .tlnode .dot{transition:r .25s, fill .25s, stroke .25s}
 .tlnode .ring{fill:none; opacity:0; transition:opacity .25s}
 .tlnode .nlab{font-family:var(--mono); font-size:9px; fill:var(--ink); text-anchor:middle;
@@ -1192,9 +1192,33 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     g.addEventListener('click',()=>{stopWalk();select(n);hideTip();});
   });
 
-  function place(){
-    N.forEach(n=>{const f=mode==='cal'?calFrac(n.year):n.gen;
-      n._g.setAttribute('transform',isMark(n)?`translate(${X(f)},0)`:`translate(${X(f)},${Y(n.cap)})`);});
+  function targetXY(n){const f=mode==='cal'?calFrac(n.year):n.gen;
+    return {x:X(f), y:isMark(n)?0:Y(n.cap)};}
+  function place(){                                   // instant snap (init / reduced-motion)
+    N.forEach(n=>{const p=targetXY(n); n._g.setAttribute('transform',`translate(${p.x},${p.y})`);});
+  }
+  // the homeomorphism: tween every node from its current position to its position
+  // under the other clock. Driven in JS rather than via a CSS transition on the SVG
+  // transform attribute (which Safari doesn't animate), so the morph is identical
+  // in every browser — same points, same order, continuously deformed.
+  let morphRAF=null;
+  function morph(){
+    if(morphRAF) cancelAnimationFrame(morphRAF);
+    if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ place(); return; }
+    const items=N.map(n=>{
+      const m=/translate\(\s*([-\d.]+)[ ,]+\s*([-\d.]+)/.exec(n._g.getAttribute('transform')||'');
+      return {n, fx:m?+m[1]:0, fy:m?+m[2]:0, to:targetXY(n)};
+    });
+    const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;   // easeInOutCubic — matches old curve
+    const start=performance.now(), dur=900;
+    morphRAF=requestAnimationFrame(function frame(now){
+      const t=Math.min(1,(now-start)/dur), e=ease(t);
+      items.forEach(it=>{
+        const x=it.fx+(it.to.x-it.fx)*e, y=it.fy+(it.to.y-it.fy)*e;
+        it.n._g.setAttribute('transform',`translate(${x},${y})`);
+      });
+      morphRAF = t<1 ? requestAnimationFrame(frame) : null;
+    });
   }
   function refreshLabels(){
     // calendar view: hide the crushed modern cluster's labels unless active.
@@ -1215,7 +1239,7 @@ const cohDots=c=>{const lit=Math.max(0,Math.min(5,Math.round(c*5)));return "●"
     ro.innerHTML='<span class="rmeta"><b>'+n.when+'</b> · '+n.era+'</span>'+n.detail;
   }
   function setMode(m){
-    mode=m; place(); refreshLabels();
+    mode=m; morph(); refreshLabels();
     const cal=m==='cal';
     calG.setAttribute('opacity',cal?1:0);
     genG.setAttribute('opacity',cal?0:1);
